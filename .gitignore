@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+data/
+reports/
+.env
+backups/
+data/backups/
+paper_portfolio.json

@@ -1,0 +1,11 @@
+{
+  "kind": "hypothetical_scenario",
+  "cash_usd": 9000,
+  "reference_equity_usd": 10000,
+  "positions": {
+    "ETH-USD": {
+      "quantity": 0.4,
+      "average_cost_usd": 2500
+    }
+  }
+}

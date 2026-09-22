@@ -1,0 +1,125 @@
+{
+  "project": "Crypto Research Bot",
+  "mode": "research_only",
+  "execution_enabled": false,
+  "data_venue": "coinbase_exchange",
+  "execution_exchange": null,
+  "assets": [
+    "BTC-USD",
+    "ETH-USD"
+  ],
+  "forecast_horizon_hours": 72,
+  "review_interval_seconds": 3600,
+  "market_max_age_seconds": 300,
+  "feed_max_age_seconds": 7200,
+  "news_lookback_hours": 168,
+  "future_tolerance_seconds": 120,
+  "http_timeout_seconds": 12,
+  "http_attempts": 2,
+  "max_spread_bps": 50,
+  "pending_user_choices": [
+    "execution exchange",
+    "holding horizon confirmation",
+    "monthly data budget",
+    "portfolio risk limits"
+  ],
+  "risk_limits": {
+    "max_position_pct": null,
+    "max_portfolio_exposure_pct": null,
+    "loss_pause_pct": null
+  },
+  "feeds": [
+    {
+      "id": "ethereum_blog",
+      "name": "Ethereum Foundation Blog",
+      "url": "https://blog.ethereum.org/feed.xml",
+      "publisher_group": "ethereum_foundation",
+      "kind": "project_primary",
+      "required": false,
+      "allowed_link_hosts": [
+        "blog.ethereum.org"
+      ]
+    },
+    {
+      "id": "coindesk",
+      "name": "CoinDesk",
+      "url": "https://www.coindesk.com/arc/outboundfeeds/rss/",
+      "publisher_group": "coindesk",
+      "kind": "reporting",
+      "required": true,
+      "allowed_link_hosts": [
+        "www.coindesk.com",
+        "coindesk.com"
+      ]
+    }
+  ],
+  "phase4": {
+    "candles": {
+      "granularity_seconds": 3600,
+      "lookback_candles": 720,
+      "page_size": 300,
+      "max_age_seconds": 7200
+    },
+    "strategy": {
+      "fast_window": 24,
+      "slow_window": 72,
+      "buffer_bps": 25
+    },
+    "costs": {
+      "fee_bps_per_side": 60,
+      "spread_floor_bps": 10,
+      "slippage_bps_per_side": 10
+    },
+    "risk": {
+      "max_position_pct": 20,
+      "max_portfolio_exposure_pct": 40,
+      "max_trade_pct": 10,
+      "position_loss_exit_pct": 8,
+      "portfolio_loss_pause_pct": 10,
+      "min_trade_usd": 10,
+      "portfolio_max_age_seconds": 86400
+    },
+    "portfolio": {
+      "kind": "hypothetical_scenario",
+      "cash_usd": 10000,
+      "reference_equity_usd": 10000,
+      "positions": {}
+    },
+    "assumptions": "provisional_simulation_only"
+  },
+  "scanner": {
+    "max_assets": 20,
+    "min_approx_usd_volume_24h": 1000000,
+    "refresh_seconds": 60,
+    "discovery_refresh_seconds": 3600,
+    "feed_refresh_seconds": 600,
+    "candle_retry_seconds": 600,
+    "request_interval_seconds": 0.2,
+    "additional_feeds": [
+      {
+        "id": "cointelegraph",
+        "name": "Cointelegraph",
+        "url": "https://cointelegraph.com/rss",
+        "publisher_group": "cointelegraph",
+        "kind": "reporting",
+        "required": false,
+        "allowed_link_hosts": [
+          "cointelegraph.com",
+          "www.cointelegraph.com"
+        ]
+      },
+      {
+        "id": "decrypt",
+        "name": "Decrypt",
+        "url": "https://decrypt.co/feed",
+        "publisher_group": "decrypt",
+        "kind": "reporting",
+        "required": false,
+        "allowed_link_hosts": [
+          "decrypt.co",
+          "www.decrypt.co"
+        ]
+      }
+    ]
+  }
+}

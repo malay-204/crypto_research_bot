@@ -1,0 +1,72 @@
+# Paper-only crypto scanner published to GitHub Pages.
+# No secrets, API keys, wallets or order endpoints are used. Public read-only market data and RSS only.
+# To stop it: Actions tab -> "Crypto scanner (paper only)" -> "..." -> Disable workflow.
+name: Crypto scanner (paper only)
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"   # about every 15 minutes (UTC); GitHub may delay or skip runs
+  workflow_dispatch:                # "Run workflow" button for a manual refresh
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: crypto-scanner
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore change log from the previous run
+        uses: actions/cache/restore@v4
+        with:
+          path: memory
+          key: scanner-memory-${{ github.run_id }}
+          restore-keys: scanner-memory-
+
+      - name: Tests
+        run: python -m unittest discover -s tests
+
+      - name: One scan (fresh database each run)
+        run: >
+          python -m crypto_bot scan --cycles 1 --no-serve
+          --db "$RUNNER_TEMP/live.sqlite3" --out build
+          --memory memory/scanner_memory.json --hosted-interval 15
+
+      - name: Save change log for the next run
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: memory
+          key: scanner-memory-${{ github.run_id }}
+
+      - name: Prepare site
+        run: |
+          mkdir -p _site
+          cp build/live_dashboard/live/index.html build/live_dashboard/live/state.json _site/
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: scan
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
